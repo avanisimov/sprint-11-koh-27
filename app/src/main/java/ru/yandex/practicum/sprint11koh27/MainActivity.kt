@@ -35,8 +35,11 @@ class MainActivity : AppCompatActivity() {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
             insets
         }
+//        Uri.parse("file:///users/home/documents/my_file.txt")
 
         val uri: Uri = Uri.parse("https://myserver.com:5051/api/v1/path?text=android&take=1#last")
+//        val myServer = MyServer()
+//        myServer.getAPiV1Path(text = android, take = 1)
 
         Log.d(TAG, "uri.scheme ${uri.scheme}")
         Log.d(TAG, "uri.host ${uri.host}")
@@ -57,6 +60,7 @@ class MainActivity : AppCompatActivity() {
                 GsonConverterFactory.create(
                     GsonBuilder()
                         .registerTypeAdapter(Date::class.java, CustomDateTypeAdapter())
+                        .registerTypeAdapter(NewsItem::class.java, NewsItemTypeAdapter())
                         .create()
                 )
             )
