@@ -35,7 +35,7 @@ sealed class NewsItem {
         override val type: String,
         override val created: Date,
         val specificPropertyForSport: String
-    ): NewsItem()
+    ) : NewsItem()
 
     data class Science(
         override val id: String,
@@ -44,7 +44,22 @@ sealed class NewsItem {
         override val created: Date,
         @SerializedName("specific_property_for_science")
         val specificPropertyForScience: String
-    ): NewsItem()
+    ) : NewsItem()
+
+    data class Social(
+        override val id: String,
+        override val title: String,
+        override val type: String,
+        override val created: Date,
+        val content: String
+    ) : NewsItem()
+
+    data class Generic(
+        override val id: String,
+        override val title: String,
+        override val type: String,
+        override val created: Date,
+    ) : NewsItem()
 }
 
 
@@ -66,8 +81,32 @@ class CustomDateTypeAdapter : TypeAdapter<Date>() {
 
 }
 
-class NewsItemTypeAdapter: JsonDeserializer<NewsItem> {
-//    {
+fun graphicEngine(): Nothing {
+    while (true) {
+        // rendering
+        System.exit(1)
+    }
+}
+
+fun method(): Result<Int, Double> {
+    graphicEngine()
+
+//    return
+}
+
+sealed class Result<T, E> {
+    data class Success<T>(
+        val data: T
+    ) : Result<T, Nothing>()
+
+    data class Error<E>(
+        val error: E
+    ) : Result<Nothing, E>()
+}
+
+
+class NewsItemTypeAdapter : JsonDeserializer<NewsItem> {
+    //    {
 //        "id": 1,
 //        "title": "Спортивная новость",
 //        "type": "sport",
@@ -81,14 +120,15 @@ class NewsItemTypeAdapter: JsonDeserializer<NewsItem> {
     ): NewsItem {
         val type = json.asJsonObject.getAsJsonPrimitive("type").asString
 
-        val sportClass : Class<NewsItem.Sport> = NewsItem.Sport::class.java
+        val sportClass: Class<NewsItem.Sport> = NewsItem.Sport::class.java
         sportClass.declaredMethods.forEach {
             Log.d("SPRINT_11", "method ${it.name}")
         }
         return when (type) {
             "sport" -> context.deserialize(json, NewsItem.Sport::class.java)
             "science" -> context.deserialize(json, NewsItem.Science::class.java)
-            else -> throw IllegalStateException("there is no class for type=$type")
+//            "social" -> context.deserialize(json, NewsItem.Social::class.java)
+            else -> context.deserialize(json, NewsItem.Generic::class.java)
         }
     }
 
